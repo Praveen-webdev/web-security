@@ -1,0 +1,12 @@
+{
+  "name": "web-security",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "install": "cd server && npm install && cd ../client && npm install",
+    "start": "concurrently \"cd server && npm start\" \"cd client && npm start\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
