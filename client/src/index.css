@@ -48,10 +48,6 @@ li {
   @apply mb-2;
 }
 
-li button {
-  @apply text-blue-500 underline hover:text-blue-700;
-}
-
 iframe {
   @apply w-full h-96 border border-gray-300 rounded-md;
 }
