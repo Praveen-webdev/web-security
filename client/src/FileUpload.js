@@ -4,8 +4,10 @@ import axios from "axios";
 const MimeDemo = () => {
   const [payload, setPayload] = useState("");
   const [contentType, setContentType] = useState("");
+  const [customContentType, setCustomContentType] = useState("");
   const [noSniff, setNoSniff] = useState(false);
   const [extension, setExtension] = useState("txt");
+  const [customExtension, setCustomExtension] = useState("");
   const [filename, setFilename] = useState("");
   const [previewUrl, setPreviewUrl] = useState("");
   const [savedFiles, setSavedFiles] = useState([]);
@@ -24,18 +26,17 @@ const MimeDemo = () => {
   }, []);
 
   const handleSavePayload = async () => {
-    // if (!filename.trim() || !payload.trim()) {
-    //   alert('Please fill in all required fields');
-    //   return;
-    // }
+    const finalExtension = extension === "other" ? customExtension : extension;
+    const finalContentType =
+      contentType === "other" ? customContentType : contentType;
 
     setIsLoading(true);
     try {
       const res = await axios.post("http://localhost:5001/save-payload", {
         payload,
-        contentType,
+        contentType: finalContentType,
         noSniff,
-        extension,
+        extension: finalExtension,
         filename,
       });
       const { filename: savedFilename } = res.data;
@@ -95,14 +96,30 @@ const MimeDemo = () => {
                       "jpg",
                       "jpeg",
                       "gif",
+                      "other",
                     ].map((ext) => (
                       <option key={ext} value={ext}>
-                        .{ext}
+                        {ext === "other" ? "Other..." : `.${ext}`}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
+
+              {extension === "other" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Custom Extension
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter custom extension (without dot)"
+                    value={customExtension}
+                    onChange={(e) => setCustomExtension(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -138,8 +155,24 @@ const MimeDemo = () => {
                   <option value="application/pdf">application/pdf</option>
                   <option value="text/javascript">text/javascript</option>
                   <option value="image/png">image/png</option>
+                  <option value="other">Other...</option>
                 </select>
               </div>
+
+              {contentType === "other" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Custom Content-Type
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter custom Content-Type"
+                    value={customContentType}
+                    onChange={(e) => setCustomContentType(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+              )}
 
               <div className="flex items-center space-x-2">
                 <input
@@ -209,9 +242,7 @@ const MimeDemo = () => {
                     src={previewUrl}
                     title="MIME Preview"
                     className="w-full h-[400px]"
-                    // sandbox=""
                   />
-                  {/* <object data={previewUrl} type="application/pdf" /> */}
                 </div>
               </div>
             )}

@@ -66,11 +66,6 @@ app.get("/files-list", (req, res) => {
 // POST /save-payload: Save payload with header options
 app.post("/save-payload", (req, res) => {
   const { payload, contentType, noSniff, extension, filename } = req.body;
-  if (typeof payload !== "string" || !extension) {
-    return res
-      .status(400)
-      .json({ error: "Payload and extension are required" });
-  }
 
   // Create a unique filename or use the provided one
   const timestamp = Date.now();
